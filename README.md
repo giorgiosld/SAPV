@@ -1,6 +1,6 @@
 # SAPV
 
-This repository contains the topics covered during the Static Analysis and Program Verification (SAPV) course. The repo is written entirely in [Agda](https://agda.readthedocs.io/en/latest/), It is assumed to use [emacs](https://www.gnu.org/software/emacs/) as text editor to make make using agda as simple as possible.
+This repository contains the topics covered during the Static Analysis and Program Verification (SAPV) course. The repo is written entirely in [Agda](https://agda.readthedocs.io/en/latest/), It is assumed to use [emacs](https://www.gnu.org/software/emacs/) as text editor to make using agda as simple as possible.
 
 Command | Action
 ------- | ---------------

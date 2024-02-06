@@ -7,6 +7,7 @@
 
 module List.L where
 open import Library.Nat
+open import Library.Nat.Properties
 open import Library.Equality
 open import Library.Equality.Reasoning
 
@@ -48,25 +49,43 @@ reverse : ∀{A : Set} → List A → List A
 reverse [] = []
 reverse (x :: xs) = reverse xs ++ [ x ]
 
--- HOMEWORK: specify and prove the property saying that the length of a list is equal to
--- the length of the list reversed
-
-length-rev : ∀{A : Set} (xs : List A) → length xs == length (reverse xs)
-length-rev [] = refl
-length-rev (x :: xs) = 
+reverse-++ : ∀{A : Set} (xs ys : List A) → reverse (xs ++ ys) == reverse ys ++ reverse xs
+reverse-++ [] ys = ++-unit-r (reverse ys)
+reverse-++ (x :: xs) ys =
   begin
-   length (x :: xs)                ==⟨ refl ⟩
-   succ (length xs)                ==⟨ cong succ (length-rev xs) ⟩
-   succ (length (reverse xs ))     ==⟨ {!!} ⟩
-   length (reverse xs) + length (x :: []) ==⟨ length-++ (reverse xs) (x :: []) ⟩
-   length (reverse xs ++ x :: [])  ==⟨ refl ⟩
-   length (reverse xs ++ [ x ])    ==⟨ refl ⟩
-   length (reverse (x :: xs))
+    reverse ((x :: xs) ++ ys) ==⟨ refl ⟩
+    reverse (x :: (xs ++ ys)) ==⟨ refl ⟩
+    reverse (xs ++ ys) ++ [ x ] ==⟨ cong (_++ [ x ]) (reverse-++ xs ys) ⟩
+    (reverse ys ++ reverse xs) ++ [ x ] ==⟨ symm (++-assoc (reverse ys) (reverse xs) [ x ]) ⟩
+    reverse ys ++ (reverse xs ++ [ x ]) ==⟨ refl ⟩
+    reverse ys ++ reverse (x :: xs)
   end
-  
 
 reverse-inv : ∀{A : Set} (xs : List A) → reverse (reverse xs) == xs
 reverse-inv [] = refl
 reverse-inv (x :: xs) =
-  {!!}
-  
+  begin
+    reverse (reverse (x :: xs)) ==⟨ refl ⟩
+    reverse (reverse xs ++ [ x ]) ==⟨ reverse-++ (reverse xs) [ x ] ⟩
+    reverse [ x ] ++ reverse (reverse xs) ==⟨ refl ⟩
+    [ x ] ++ reverse (reverse xs) ==⟨ cong([ x ] ++_) ( (reverse-inv xs)) ⟩
+    [ x ] ++ xs ==⟨ refl ⟩
+    x :: xs
+  end
+
+-- HOMEWORK: specify and prove the property saying that the length of a list is equal to
+-- the length of the list reversed
+
+length-rev : ∀{A : Set} (xs : List A) → length xs == length (reverse xs)
+length-rev []         = refl
+length-rev (x :: xs)  =
+  begin
+    length (x :: xs)                    ==⟨ refl ⟩
+    succ (length xs)                    ==⟨ cong succ (length-rev xs) ⟩
+    succ (length (reverse xs))          ==⟨ refl ⟩
+    1 + length (reverse xs)             ==⟨ +-comm 1 (length (reverse xs)) ⟩
+    length (reverse xs) + 1             ==⟨ refl ⟩
+    length (reverse xs) + length [ x ]  ==⟨ length-++ (reverse xs) [ x ] ⟩
+    length (reverse xs ++ [ x ])        ==⟨ refl ⟩
+    length (reverse (x :: xs))
+  end
