@@ -1,4 +1,4 @@
-module Connectives.Connectives where
+module Connectives.Conn where
 open import Library.Nat
 open import Library.Bool
 open import Library.List
